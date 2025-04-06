@@ -14,6 +14,9 @@ grid_cells: [GRID_WIDTH][GRID_WIDTH]Cell
 blocks: [GRID_WIDTH][GRID_WIDTH]Block
 current_grid_cells := MAX_GRID_CELLS
 
+// Icon
+icon_path: cstring = "assets/stone_cracked.png"
+
 // Init functions
 init_grid_cells :: proc() {
 	for x in 0 ..< GRID_WIDTH {
@@ -179,7 +182,7 @@ game_loop :: proc() {
 		rl.BeginMode2D(camera)
 		blocks[5][5].type = CellType.Empty
 		blocks[5][5].status = CellStatus.Inactive
-		
+
 
 		// Draw grid cell
 		draw_background_board()
@@ -213,10 +216,19 @@ game_loop :: proc() {
 	}
 }
 
+set_window_icon :: proc() {
+	if rl.FileExists(icon_path) {
+		rl.SetWindowIcon(rl.LoadImage(icon_path))
+	} else {
+		rl.SetWindowIcon(rl.GenImageColor(16, 16, rl.RED))
+	}
+}
+
 main :: proc() {
 	rl.SetConfigFlags({.VSYNC_HINT})
 	rl.InitWindow(WINDOW_SIZE, WINDOW_SIZE, "Mine It Down!")
 	rl.HideCursor()
+	set_window_icon()
 	//rl.InitAudioDevice()
 	defer {
 		rl.ShowCursor()
