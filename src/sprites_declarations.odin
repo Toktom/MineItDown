@@ -10,11 +10,11 @@ mossy_stone_cracked_sprite: rl.Texture2D
 
 // Loading with fallback function
 fallback_load_texture :: proc(path: cstring, color: rl.Color = rl.BLUE) -> rl.Texture2D {
-	// if the texture fails to load, return a default texture
-	// that is a square
-
-	texture := rl.LoadTexture(path)
-	if texture.id == 0 {
+	texture: rl.Texture2D	
+	
+	if rl.FileExists(path) {
+		texture = rl.LoadTexture(path)
+	} else {
 		texture = rl.LoadTextureFromImage(rl.GenImageColor(16, 16, color))
 	}
 
