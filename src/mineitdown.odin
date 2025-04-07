@@ -40,6 +40,7 @@ init_game :: proc() {
 	game_over = false
 	init_grid_cells()
 	init_blocks()
+	empty_a_block(1, 1)
 
 	current_player_position = {GRID_WIDTH / 2, GRID_HEIGHT / 2} // Start in the center
 	move_direction = {0, 0}
@@ -171,7 +172,7 @@ game_loop :: proc() {
 			zoom     = DEFAULT_CAMERA_ZOOM,
 		}
 		rl.BeginMode2D(camera)
-		empty_a_block(1, 1)
+		
 
 
 		// Draw grid cell
