@@ -226,6 +226,7 @@ main :: proc() {
 	set_window_icon()
 	//rl.InitAudioDevice()
 	defer {
+		unload_sprites()
 		rl.ShowCursor()
 		rl.CloseWindow()
 	}
