@@ -2,9 +2,9 @@ package mineitdown
 
 // Enums
 BoardColors :: enum {
-    Line,
-    Background,
-    Pattern,
+	Line,
+	Background,
+	Pattern,
 }
 CellType :: enum {
 	Empty,
@@ -15,4 +15,11 @@ CellType :: enum {
 CellStatus :: enum {
 	Active,
 	Inactive,
+}
+
+Direction :: enum {
+	Up,
+	Down,
+	Left,
+	Right,
 }

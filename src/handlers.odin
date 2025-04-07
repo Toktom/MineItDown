@@ -14,13 +14,13 @@ handle_player_mouse_position :: proc() {
 	target = get_grid_coordinates_from_mouse()
 
 	if target.x > current_player_position.x {
-		move_direction = {1, 0}
+		move_direction = Movement_Vectors[.Right]
 	} else if target.x < current_player_position.x {
-		move_direction = {-1, 0}
+		move_direction = Movement_Vectors[.Left]
 	} else if target.y > current_player_position.y {
-		move_direction = {0, 1}
+		move_direction = Movement_Vectors[.Down]
 	} else if target.y < current_player_position.y {
-		move_direction = {0, -1}
+		move_direction = Movement_Vectors[.Up]
 	}
 }
 
