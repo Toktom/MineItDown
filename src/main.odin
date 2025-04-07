@@ -4,9 +4,6 @@ import "core:fmt"
 import "core:math"
 import rl "vendor:raylib"
 
-// Icon
-icon_path: cstring = "assets/stone_cracked.png"
-
 set_window_icon :: proc() {
 	if rl.FileExists(icon_path) {
 		rl.SetWindowIcon(rl.LoadImage(icon_path))
