@@ -24,11 +24,9 @@ handle_player_mouse_position :: proc() {
 	}
 }
 
-handle_select_key_input :: proc() {
+handle_player_action :: proc() {
 	if rl.IsMouseButtonPressed(.LEFT) {
-		// get mouse position and get the respective cell index       
-		blocks[current_player_position.x][current_player_position.y].status = CellStatus.Inactive
-		blocks[current_player_position.x][current_player_position.y].type = CellType.Empty
+		empty_a_block(current_player_position.x, current_player_position.y)
 		}
 	
 }

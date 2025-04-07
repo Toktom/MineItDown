@@ -152,7 +152,7 @@ check_game_over :: proc() -> bool {
 game_loop :: proc() {
 	for !rl.WindowShouldClose() {
 		handle_player_mouse_position()
-		handle_select_key_input()
+		handle_player_action()
 
 		game_over = check_game_over()
 
