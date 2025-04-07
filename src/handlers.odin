@@ -13,20 +13,20 @@ handle_player_mouse_position :: proc() {
 	// Calculate direction toward mouse (prioritizing horizontal movement)
 	target = get_grid_coordinates_from_mouse()
 
-	if target.x > current_player_position.x {
-		move_direction = Movement_Vectors[.Right]
-	} else if target.x < current_player_position.x {
-		move_direction = Movement_Vectors[.Left]
-	} else if target.y > current_player_position.y {
-		move_direction = Movement_Vectors[.Down]
-	} else if target.y < current_player_position.y {
-		move_direction = Movement_Vectors[.Up]
+	if target.x > player_pos.x {
+		player_move_direction = MOVEMENT_VECTORS[.Right]
+	} else if target.x < player_pos.x {
+		player_move_direction = MOVEMENT_VECTORS[.Left]
+	} else if target.y > player_pos.y {
+		player_move_direction = MOVEMENT_VECTORS[.Down]
+	} else if target.y < player_pos.y {
+		player_move_direction = MOVEMENT_VECTORS[.Up]
 	}
 }
 
 handle_player_action :: proc() {
 	if rl.IsMouseButtonPressed(.LEFT) {
-		empty_a_block(current_player_position.x, current_player_position.y)
+		remove_block(player_pos.x, player_pos.y)
 		}
 	
 }

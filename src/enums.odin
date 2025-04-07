@@ -1,18 +1,18 @@
 package mineitdown
 
 // Enums
-BoardColors :: enum {
+BoardColorType :: enum {
 	Line,
 	Background,
 	Pattern,
 }
-CellType :: enum {
+BlockType :: enum {
 	Empty,
 	Stone,
 	MossyStone,
 	MossyStoneCracked,
 }
-CellStatus :: enum {
+BlockState :: enum {
 	Active,
 	Inactive,
 }

@@ -2,7 +2,7 @@ package mineitdown
 
 import rl "vendor:raylib"
 
-grid_to_screen :: proc(grid_pos: Vec2i) -> rl.Vector2 {
+convert_grid_to_screen :: proc(grid_pos: Vec2i) -> rl.Vector2 {
     return rl.Vector2{
         BOARD_OFFSET_X + (f32(grid_pos.x) * CELL_SIZE),
         BOARD_OFFSET_Y + (f32(grid_pos.y) * CELL_SIZE),
@@ -16,7 +16,7 @@ grid_to_screen_center :: proc(grid_pos: Vec2i) -> rl.Vector2 {
     }
 }
 
-screen_to_grid :: proc(screen_pos: rl.Vector2) -> Vec2i {
+convert_screen_to_grid :: proc(screen_pos: rl.Vector2) -> Vec2i {
     // Convert to grid coordinates, considering the camera zoom
     zoom := DEFAULT_CAMERA_ZOOM
     
@@ -32,5 +32,5 @@ screen_to_grid :: proc(screen_pos: rl.Vector2) -> Vec2i {
 }
 
 get_grid_coordinates_from_mouse :: proc() -> Vec2i {
-    return screen_to_grid(rl.GetMousePosition())
+    return convert_screen_to_grid(rl.GetMousePosition())
 }

@@ -15,7 +15,7 @@ fallback_load_texture :: proc(path: cstring, color: rl.Color = rl.BLUE) -> rl.Te
 	if rl.FileExists(path) {
 		texture = rl.LoadTexture(path)
 	} else {
-		texture = rl.LoadTextureFromImage(rl.GenImageColor(16, 16, color))
+		texture = rl.LoadTextureFromImage(rl.GenImageColor(SPRITE_TEXTURE_SIZE, SPRITE_TEXTURE_SIZE, color))
 	}
 
 	return texture
@@ -24,11 +24,11 @@ fallback_load_texture :: proc(path: cstring, color: rl.Color = rl.BLUE) -> rl.Te
 // Load and unload sprites
 load_sprites :: proc() {
 	player_sprite = fallback_load_texture("assets/selection.png")
-	stone_sprite = fallback_load_texture("assets/stone.png", BLOCKS_COLORS[CellType.Stone])
-	mossy_stone_sprite = fallback_load_texture("assets/mossy_stone.png", BLOCKS_COLORS[CellType.MossyStone])
+	stone_sprite = fallback_load_texture("assets/stone.png", BLOCKS_COLORS_MAP[BlockType.Stone])
+	mossy_stone_sprite = fallback_load_texture("assets/mossy_stone.png", BLOCKS_COLORS_MAP[BlockType.MossyStone])
 	mossy_stone_cracked_sprite = fallback_load_texture(
 		"assets/mossy_stone_cracked.png",
-		BLOCKS_COLORS[CellType.MossyStoneCracked],
+		BLOCKS_COLORS_MAP[BlockType.MossyStoneCracked],
 	)
 
 }
