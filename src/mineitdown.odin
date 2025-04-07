@@ -3,15 +3,14 @@ package mineitdown
 import "core:fmt"
 import "core:math"
 import rl "vendor:raylib"
-
 // Variables
 player_possible_position: [MAX_GRID_CELLS]Vec2i
 current_player_position: Vec2i
 target: Vec2i
 move_direction: Vec2i
 game_over: bool
-grid_cells: [GRID_WIDTH][GRID_WIDTH]Cell
-blocks: [GRID_WIDTH][GRID_WIDTH]Block
+grid_cells: [GRID_WIDTH][GRID_HEIGHT]Cell
+blocks: [GRID_WIDTH][GRID_HEIGHT]Block
 current_grid_cells := MAX_GRID_CELLS
 
 // Icon
@@ -20,7 +19,7 @@ icon_path: cstring = "assets/stone_cracked.png"
 // Init functions
 init_grid_cells :: proc() {
 	for x in 0 ..< GRID_WIDTH {
-		for y in 0 ..< GRID_WIDTH {
+		for y in 0 ..< GRID_HEIGHT {
 			cell := Cell{{x, y}}
 			grid_cells[x][y] = cell
 		}
@@ -28,7 +27,7 @@ init_grid_cells :: proc() {
 }
 init_blocks :: proc() {
 	for x in 0 ..< GRID_WIDTH {
-		for y in 0 ..< GRID_WIDTH {
+		for y in 0 ..< GRID_HEIGHT {
 			cell := grid_cells[x][y]
 
 			block := Block{cell, CellStatus.Active, CellType.Stone}
@@ -42,44 +41,35 @@ init_game :: proc() {
 	init_grid_cells()
 	init_blocks()
 
-	current_player_position = {GRID_WIDTH / 2, GRID_WIDTH / 2} // Start in the center
+	current_player_position = {GRID_WIDTH / 2, GRID_HEIGHT / 2} // Start in the center
 	move_direction = {0, 0}
 
 	// Calculate center of the middle cell in screen coordinates
-	center_x := current_player_position.x * CELL_SIZE + CELL_SIZE / 2
-	center_y := current_player_position.y * CELL_SIZE + CELL_SIZE / 2
+	screen_center := grid_to_screen_center(current_player_position)
+	zoom := DEFAULT_CAMERA_ZOOM
+	rl.SetMousePosition(i32(screen_center.x * zoom), i32(screen_center.y * zoom))
 
-	// Apply zoom factor to convert to screen coordinates
-	zoom := f32(WINDOW_SIZE) / CANVAS_SIZE
-	screen_x := i32(f32(center_x) * zoom)
-	screen_y := i32(f32(center_y) * zoom)
-
-	rl.SetMousePosition(screen_x, screen_y)
 	// Reset other game state here
 }
 
-// Draw functions
 draw_blocks :: proc() {
 	for x in 0 ..< GRID_WIDTH {
-		for y in 0 ..< GRID_WIDTH {
+		for y in 0 ..< GRID_HEIGHT {
 			block := blocks[x][y]
-			block_pos := rl.Vector2 {
-				BOARD_OFFSET_X + f32(block.pos[0] * CELL_SIZE),
-				BOARD_OFFSET_Y + f32(block.pos[1] * CELL_SIZE),
-			}
+			block_pos := grid_to_screen(block.pos)
+
 			if block.status == CellStatus.Active {
 				// Draw the cell based on its type
+				source_rect := rl.Rectangle{0, 0, f32(TEXTURE_SIZE), f32(TEXTURE_SIZE)}
+				dest_rect := rl.Rectangle{block_pos.x, block_pos.y, CELL_SIZE, CELL_SIZE}
+
 				switch block.type {
 				case CellType.Stone:
-					rl.DrawTextureV(stone_sprite, block_pos, rl.WHITE)
+					rl.DrawTexturePro(stone_sprite, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
 				case CellType.MossyStone:
-					rl.DrawTextureV(mossy_stone_sprite, {f32(block.pos[0]), f32(block.pos[1])} * CELL_SIZE, rl.WHITE)
+					rl.DrawTexturePro(mossy_stone_sprite, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
 				case CellType.MossyStoneCracked:
-					rl.DrawTextureV(
-						mossy_stone_cracked_sprite,
-						{f32(block.pos[0]), f32(block.pos[1])} * CELL_SIZE,
-						rl.WHITE,
-					)
+					rl.DrawTexturePro(mossy_stone_cracked_sprite, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
 				case CellType.Empty:
 				// Do nothing for empty cells
 				}
@@ -90,16 +80,16 @@ draw_blocks :: proc() {
 
 draw_background_board :: proc() {
 	// Draw big rectangle background with offset
-	background_rect := rl.Rectangle{BOARD_OFFSET_X, BOARD_OFFSET_Y, CANVAS_SIZE, CANVAS_SIZE}
+	background_rect := rl.Rectangle{BOARD_OFFSET_X, BOARD_OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT}
 	rl.DrawRectangleRec(background_rect, BOARD_COLORS[BoardColors.Background])
 
 	// Draw the board pattern (checkerboard) with offset
 	for x in 0 ..< GRID_WIDTH {
-		for y in 0 ..< GRID_WIDTH {
+		for y in 0 ..< GRID_HEIGHT {
 			if (x + y) % 2 == 0 {
 				rect := rl.Rectangle {
-					BOARD_OFFSET_X + f32(x * CELL_SIZE),
-					BOARD_OFFSET_Y + f32(y * CELL_SIZE),
+					BOARD_OFFSET_X + (f32(x) * CELL_SIZE),
+					BOARD_OFFSET_Y + (f32(y) * CELL_SIZE),
 					CELL_SIZE,
 					CELL_SIZE,
 				}
@@ -110,38 +100,30 @@ draw_background_board :: proc() {
 
 	// Draw grid lines with offset
 	for x in 0 ..< GRID_WIDTH + 1 {
-		start_pos := rl.Vector2{BOARD_OFFSET_X + f32(x * CELL_SIZE), BOARD_OFFSET_Y}
-		end_pos := rl.Vector2{BOARD_OFFSET_X + f32(x * CELL_SIZE), BOARD_OFFSET_Y + CANVAS_SIZE}
+		start_pos := rl.Vector2{BOARD_OFFSET_X + (f32(x) * CELL_SIZE), BOARD_OFFSET_Y}
+		end_pos := rl.Vector2{BOARD_OFFSET_X + (f32(x) * CELL_SIZE), BOARD_OFFSET_Y + BOARD_HEIGHT}
 		rl.DrawLineEx(start_pos, end_pos, GRID_LINE_WIDTH, BOARD_COLORS[BoardColors.Line])
 	}
 
-	for y in 0 ..< GRID_WIDTH + 1 {
-		start_pos := rl.Vector2{BOARD_OFFSET_X, BOARD_OFFSET_Y + f32(y * CELL_SIZE)}
-		end_pos := rl.Vector2{BOARD_OFFSET_X + CANVAS_SIZE, BOARD_OFFSET_Y + f32(y * CELL_SIZE)}
+	for y in 0 ..< GRID_HEIGHT + 1 {
+		start_pos := rl.Vector2{BOARD_OFFSET_X, BOARD_OFFSET_Y + (f32(y) * CELL_SIZE)}
+		end_pos := rl.Vector2{BOARD_OFFSET_X + BOARD_WIDTH, BOARD_OFFSET_Y + (f32(y) * CELL_SIZE)}
 		rl.DrawLineEx(start_pos, end_pos, GRID_LINE_WIDTH, BOARD_COLORS[BoardColors.Line])
 	}
 }
-
-// Player movement related functions
-get_grid_coordinates_from_mouse :: proc() -> Vec2i {
-	mouse_pos := rl.GetMousePosition()
-	// Convert to grid coordinates, considering the camera zoom
-	zoom := f32(WINDOW_SIZE) / CANVAS_SIZE
-	grid_x := int(mouse_pos.x / (CELL_SIZE * zoom))
-	grid_y := int(mouse_pos.y / (CELL_SIZE * zoom))
-
-	// Clamp to grid boundaries
-	grid_x = max(0, min(grid_x, GRID_WIDTH - 1))
-	grid_y = max(0, min(grid_y, GRID_WIDTH - 1))
-
-	return Vec2i{grid_x, grid_y}
+empty_a_block ::proc(x:int, y:int) {
+	if blocks[x][y].status == CellStatus.Active {
+		blocks[x][y].status = CellStatus.Inactive
+		blocks[x][y].type = CellType.Empty
+	}
+	
 }
 move_player :: proc() {
 	// Calculate new position
 	new_pos := Vec2i{current_player_position.x + move_direction.x, current_player_position.y + move_direction.y}
 
 	// Check bounds
-	if new_pos.x >= 0 && new_pos.x < GRID_WIDTH && new_pos.y >= 0 && new_pos.y < GRID_WIDTH {
+	if new_pos.x >= 0 && new_pos.x < GRID_WIDTH && new_pos.y >= 0 && new_pos.y < GRID_HEIGHT {
 		current_player_position = new_pos
 	}
 
@@ -149,23 +131,29 @@ move_player :: proc() {
 	move_direction = {0, 0}
 }
 
+check_game_over :: proc() -> bool {
+	// Count inactive blocks (assuming game over happens when all blocks are mined)
+	inactive_blocks := 0
+
+	for x in 0 ..< GRID_WIDTH {
+		for y in 0 ..< GRID_HEIGHT {
+			if blocks[x][y].status == CellStatus.Inactive {
+				inactive_blocks += 1
+			}
+		}
+	}
+
+	// Game is over when all blocks have been mined
+	// (adjust this condition based on your actual game rules)
+	return inactive_blocks == MAX_GRID_CELLS
+}
+
 game_loop :: proc() {
 	for !rl.WindowShouldClose() {
 		handle_player_mouse_position()
 		handle_select_key_input()
-		// Game over
-		// if all cells are clicked, set game_over to true
-		active_blocks := 0
-		for x in 0 ..< GRID_WIDTH {
-			for y in 0 ..< GRID_WIDTH {
-				if blocks[x][y].status == CellStatus.Active {
-					active_blocks += 1
-				}
-			}
-		}
-		if active_blocks == MAX_GRID_CELLS {
-			game_over = true
-		}
+
+		game_over = check_game_over()
 
 		if game_over {
 			handle_game_over_key_input()
@@ -175,13 +163,15 @@ game_loop :: proc() {
 
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.WHITE)
-		// Camera
+		//Camera
 		camera := rl.Camera2D {
-			zoom = f32(WINDOW_SIZE) / (CANVAS_SIZE + GRID_LINE_WIDTH),
+			target   = {BOARD_OFFSET_X + BOARD_WIDTH / 2, BOARD_OFFSET_Y + BOARD_HEIGHT / 2},
+			offset   = {WINDOW_SIZE / 2, WINDOW_SIZE / 2},
+			rotation = 0.0,
+			zoom     = DEFAULT_CAMERA_ZOOM,
 		}
 		rl.BeginMode2D(camera)
-		blocks[5][5].type = CellType.Empty
-		blocks[5][5].status = CellStatus.Inactive
+		empty_a_block(1, 1)
 
 
 		// Draw grid cell
@@ -189,25 +179,29 @@ game_loop :: proc() {
 		draw_blocks()
 
 		// Player
-		rl.DrawTextureV(
-			player_sprite,
-			({f32(current_player_position.x), f32(current_player_position.y)} * CELL_SIZE) + GRID_LINE_OFFSET,
-			rl.WHITE,
-		)
+		player_pos := grid_to_screen(current_player_position)
+		player_source_rect := rl.Rectangle {
+			0,
+			0,
+			f32(TEXTURE_SIZE),
+			f32(TEXTURE_SIZE),
+		}
+		player_dest_rect := rl.Rectangle{player_pos.x, player_pos.y, CELL_SIZE, CELL_SIZE}
+		rl.DrawTexturePro(player_sprite, player_source_rect, player_dest_rect, {0, 0}, 0, rl.WHITE)
 
 		rl.DrawText(
-			fmt.ctprintf("Position: %d, %d", current_player_position.x, current_player_position.y),
+			fmt.ctprintf("Position: [%d][%d]", current_player_position.x, current_player_position.y),
 			5,
 			5,
-			1,
-			rl.WHITE,
+			20,
+			rl.BLUE,
 		)
 		rl.DrawText(
 			fmt.ctprintf("Status: %v", blocks[current_player_position.x][current_player_position.y].status),
 			5,
-			15,
-			1,
-			rl.WHITE,
+			25,
+			20,
+			rl.BLUE,
 		)
 
 		rl.EndMode2D()
