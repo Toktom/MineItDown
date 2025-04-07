@@ -10,8 +10,8 @@ mossy_stone_cracked_sprite: rl.Texture2D
 
 // Loading with fallback function
 fallback_load_texture :: proc(path: cstring, color: rl.Color = rl.BLUE) -> rl.Texture2D {
-	texture: rl.Texture2D	
-	
+	texture: rl.Texture2D
+
 	if rl.FileExists(path) {
 		texture = rl.LoadTexture(path)
 	} else {

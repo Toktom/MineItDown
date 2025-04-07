@@ -9,7 +9,7 @@ MAX_GRID_CELLS :: GRID_WIDTH * GRID_HEIGHT
 
 // Calculate cell size based on available space and grid dimensions
 // Use the smaller dimension to ensure board fits both horizontally and vertically
-MAX_BOARD_SIZE :: WINDOW_SIZE_PX * 0.8  // Use 80% of window size for the board
+MAX_BOARD_SIZE :: WINDOW_SIZE_PX * 0.8 // Use 80% of window size for the board
 MAX_CELL_SIZE :: f32(MAX_BOARD_SIZE / f32(max(GRID_WIDTH, GRID_HEIGHT)))
 CELL_SIZE :: f32(MAX_CELL_SIZE)
 
@@ -17,7 +17,7 @@ BOARD_SIZE_WIDTH :: f32(GRID_WIDTH) * CELL_SIZE
 BOARD_SIZE_HEIGHT :: f32(GRID_HEIGHT) * CELL_SIZE
 
 // Line
-GRID_LINE_WIDTH :: f32(CELL_SIZE / 12) 
+GRID_LINE_WIDTH :: f32(CELL_SIZE / 12)
 GRID_LINE_OFFSET :: GRID_LINE_WIDTH / 2
 
 // Center the board in the screen
@@ -33,8 +33,8 @@ SPRITE_TEXTURE_SIZE :: 16
 
 // Others
 MOVEMENT_VECTORS :: [Direction][2]int {
-	.Up = {0, -1},
-	.Down = {0, 1},
-	.Left = {-1, 0},
+	.Up    = {0, -1},
+	.Down  = {0, 1},
+	.Left  = {-1, 0},
 	.Right = {1, 0},
 }
