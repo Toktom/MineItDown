@@ -10,4 +10,5 @@ Block :: struct {
 	using cell: Cell,
 	status:     BlockState,
 	type:       BlockType,
+	health:	  int,
 }

@@ -11,12 +11,13 @@ init_grid_cells :: proc() {
 		}
 	}
 }
+
 init_blocks :: proc() {
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
 			cell := game_state.grid_cells[x][y]
 
-			block := Block{cell, BlockState.Active, BlockType.Stone}
+			block := Block{cell, BlockState.Active, BlockType.Stone, 1}
 			game_state.blocks[x][y] = block
 		}
 	}
@@ -83,9 +84,40 @@ draw_background_board :: proc() {
 }
 
 remove_block :: proc(x: int, y: int) {
-	if game_state.blocks[x][y].status == BlockState.Active {
-		game_state.blocks[x][y].status = BlockState.Inactive
-		game_state.blocks[x][y].type = BlockType.Empty
+	block := &game_state.blocks[x][y]
+	if block.status == BlockState.Active {
+		block.status = BlockState.Inactive
+		block.type = BlockType.Empty
+		block.health = 0
 	}
 
+}
+
+mine_block :: proc(x: int, y: int) {
+	block := &game_state.blocks[x][y]
+	block.health = max(0, block.health - player.damage)
+
+	if block.health <= 0 {
+		remove_block(x, y)
+	}
+}
+
+change_block :: proc(x: int, y: int, new_block_type: BlockType) {
+	block := &game_state.blocks[x][y]
+	if block.status == BlockState.Active {
+		switch new_block_type {
+		case BlockType.Stone:
+			block.type = BlockType.Stone
+			block.health = 1
+		case BlockType.MossyStone:
+			block.type = BlockType.MossyStone
+			block.health = 2
+		case BlockType.MossyStoneCracked:
+			block.type = BlockType.MossyStoneCracked
+			block.health = 1
+		case BlockType.Empty:
+			block.type = BlockType.Empty
+			block.health = 0
+		}
+	}
 }

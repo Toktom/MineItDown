@@ -3,8 +3,6 @@ package mineitdown
 import rl "vendor:raylib"
 
 GameState :: struct {
-	player_pos:            Vec2i,
-	player_move_direction: Vec2i,
 	target:                Vec2i,
 	grid_cells:            [GRID_WIDTH][GRID_HEIGHT]Cell,
 	blocks:                [GRID_WIDTH][GRID_HEIGHT]Block,
@@ -20,7 +18,10 @@ init_game :: proc() {
 	init_grid_cells()
 	init_blocks()
 	init_player()
-    remove_block(1, 1)
+	remove_block(1, 1)
+	change_block(1, 1, BlockType.MossyStoneCracked)
+	change_block(2, 2, BlockType.MossyStone)
+	change_block(3, 3, BlockType.MossyStone)
 }
 
 

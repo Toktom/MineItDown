@@ -6,7 +6,7 @@ import rl "vendor:raylib"
 draw_ui :: proc() {
 	// Draw debug information
 	rl.DrawText(
-		fmt.ctprintf("Position: [%d][%d]", game_state.player_pos.x, game_state.player_pos.y),
+		fmt.ctprintf("Position: [%d][%d]", player.pos.x, player.pos.y),
 		5,
 		5,
 		20,
@@ -14,12 +14,21 @@ draw_ui :: proc() {
 	)
 
 	rl.DrawText(
-		fmt.ctprintf("Status: %v", game_state.blocks[game_state.player_pos.x][game_state.player_pos.y].status),
+		fmt.ctprintf("Status: %v", game_state.blocks[player.pos.x][player.pos.y].status),
 		5,
 		25,
 		20,
 		rl.BLUE,
 	)
+
+	rl.DrawText(
+		fmt.ctprintf("Health: %v", game_state.blocks[player.pos.x][player.pos.y].health),
+		5,
+		45,
+		20,
+		rl.BLUE,
+	)
+
 
 	// Add other UI elements as needed
 	if game_state.game_over {
