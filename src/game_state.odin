@@ -3,12 +3,12 @@ package mineitdown
 import rl "vendor:raylib"
 
 GameState :: struct {
-	target:                Vec2i,
-	grid_cells:            [GRID_WIDTH][GRID_HEIGHT]Vec2i,
-	interactables:		 [GRID_WIDTH][GRID_HEIGHT]Interactable,
-	blocks:                [GRID_WIDTH][GRID_HEIGHT]Block,
-	game_over:             bool,
-	update:                proc(game_state: ^GameState),
+	target:        Vec2i,
+	grid_cells:    [GRID_WIDTH][GRID_HEIGHT]Vec2i,
+	interactables: [GRID_WIDTH][GRID_HEIGHT]Interactable,
+	blocks:        [GRID_WIDTH][GRID_HEIGHT]Block,
+	game_over:     bool,
+	update:        proc(game_state: ^GameState),
 }
 
 game_state: GameState

@@ -33,7 +33,7 @@ render :: proc() {
 	draw_background_board()
 	draw_blocks()
 	player->draw()
-	
+
 	//draw_player()
 	draw_ui()
 
