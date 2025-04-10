@@ -4,32 +4,49 @@ import rl "vendor:raylib"
 
 
 Block :: struct {
-	pos:    Vec2i,
-	status: State,
-	type:   BlockType,
-	health: int,
-	draw:   proc(block: ^Block),
+	pos:         Vec2i,
+	status:      State,
+	type:        BlockType,
+	health:      int,
+	// Cached values for drawing
+	screen_pos:  rl.Vector2,
+	source_rect: rl.Rectangle,
+	dest_rect:   rl.Rectangle,
+	draw:        proc(block: ^Block),
 }
 
 init_block :: proc(grid_pos: Vec2i) -> Block {
-	block := Block{grid_pos, State.Active, BlockType.Stone, 1, nil}
-	block.draw = proc(block: ^Block) {
-		block_pos := convert_grid_to_screen(block.pos)
-		source_rect := rl.Rectangle{0, 0, f32(SPRITE_TEXTURE_SIZE), f32(SPRITE_TEXTURE_SIZE)}
-		dest_rect := rl.Rectangle{block_pos.x, block_pos.y, CELL_SIZE, CELL_SIZE}
+	block := Block {
+		pos    = grid_pos,
+		status = State.Active,
+		type   = BlockType.Stone,
+		health = 1,
+	}
 
+	// Pre-compute drawing values
+	block.screen_pos = convert_grid_to_screen(grid_pos)
+	block.source_rect = rl.Rectangle{0, 0, f32(SPRITE_TEXTURE_SIZE), f32(SPRITE_TEXTURE_SIZE)}
+	block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
+
+	block.draw = proc(block: ^Block) {
+		// Use cached values instead of recalculating
 		switch block.type {
 		case BlockType.Stone:
-			rl.DrawTexturePro(stone_sprite, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
+			rl.DrawTexturePro(stone_sprite, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
 		case BlockType.MossyStone:
-			rl.DrawTexturePro(mossy_stone_sprite, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
+			rl.DrawTexturePro(mossy_stone_sprite, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
 		case BlockType.MossyStoneCracked:
-			rl.DrawTexturePro(mossy_stone_cracked_sprite, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
+			rl.DrawTexturePro(mossy_stone_cracked_sprite, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
 		case BlockType.Empty:
 		// Do nothing for empty cells
 		}
 	}
 	return block
+}
+
+update_block_drawing_cache :: proc(block: ^Block) {
+    block.screen_pos = convert_grid_to_screen(block.pos)
+    block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
 }
 
 init_blocks :: proc() {
@@ -43,8 +60,7 @@ init_blocks :: proc() {
 draw_blocks :: proc() {
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
-			block := game_state.blocks[x][y]
-			block_pos := convert_grid_to_screen(block.pos)
+			block := &game_state.blocks[x][y]
 
 			if block.status == State.Active {
 				block->draw()

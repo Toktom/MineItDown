@@ -4,19 +4,27 @@ import rl "vendor:raylib"
 
 
 Interactable :: struct {
-	pos:    Vec2i,
-	status: State,
-	type:   InteractableType,
-	draw:   proc(block: ^Interactable),
+	pos:         Vec2i,
+	status:      State,
+	type:        InteractableType,
+	// Cached values for drawing
+	screen_pos:  rl.Vector2,
+	source_rect: rl.Rectangle,
+	dest_rect:   rl.Rectangle,
+	draw:        proc(interactable: ^Interactable),
 }
 
 init_interactable :: proc(grid_pos: Vec2i) -> Interactable {
-	interactable := Interactable{grid_pos, State.Active, InteractableType.None, nil}
+	interactable := Interactable {
+		pos    = grid_pos,
+		status = State.Active,
+		type   = InteractableType.None,
+	}
+	interactable.screen_pos = convert_grid_to_screen(grid_pos)
+	interactable.source_rect = rl.Rectangle{0, 0, f32(SPRITE_TEXTURE_SIZE), f32(SPRITE_TEXTURE_SIZE)}
+	interactable.dest_rect = rl.Rectangle{interactable.screen_pos.x, interactable.screen_pos.y, CELL_SIZE, CELL_SIZE}
 	interactable.draw = proc(interactable: ^Interactable) {
-		interactable_pos := convert_grid_to_screen(interactable.pos)
-		source_rect := rl.Rectangle{0, 0, f32(SPRITE_TEXTURE_SIZE), f32(SPRITE_TEXTURE_SIZE)}
-		dest_rect := rl.Rectangle{interactable_pos.x, interactable_pos.y, CELL_SIZE, CELL_SIZE}
-
+		// Use cached values instead of recalculating
 		switch interactable.type {
 		case InteractableType.None:
 		// Do nothing for empty interactables
@@ -41,15 +49,15 @@ init_interactable :: proc(grid_pos: Vec2i) -> Interactable {
 	return interactable
 }
 
+update_interactable_drawing_cache :: proc(interactable: ^Interactable) {
+    interactable.screen_pos = convert_grid_to_screen(interactable.pos)
+    interactable.dest_rect = rl.Rectangle{interactable.screen_pos.x, interactable.screen_pos.y, CELL_SIZE, CELL_SIZE}
+}
+
 init_interactables :: proc() {
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
-			game_state.interactables[x][y] = Interactable {
-				game_state.grid_cells[x][y],
-				State.Active,
-				InteractableType.None,
-				nil,
-			}
+			game_state.interactables[x][y] = init_interactable(game_state.grid_cells[x][y])
 		}
 	}
 }
@@ -57,8 +65,7 @@ init_interactables :: proc() {
 draw_interactables :: proc() {
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
-			interactable := game_state.interactables[x][y]
-			interactable_pos := convert_grid_to_screen(interactable.pos)
+			interactable := &game_state.interactables[x][y]
 
 			if interactable.status == State.Active {
 				interactable->draw()
