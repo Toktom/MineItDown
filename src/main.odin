@@ -32,7 +32,9 @@ render :: proc() {
 
 	draw_background_board()
 	draw_blocks()
-	draw_player()
+	player->draw()
+	
+	//draw_player()
 	draw_ui()
 
 	rl.EndMode2D()
@@ -41,8 +43,8 @@ render :: proc() {
 
 
 update :: proc() {
-	player_actions()
-	game_state.game_over = is_game_over()
+	game_state->update()
+	player->update()
 
 	if game_state.game_over {
 		handle_game_over_key_input()

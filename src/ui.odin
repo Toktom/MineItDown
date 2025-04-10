@@ -10,7 +10,7 @@ draw_ui :: proc() {
 		5,
 		5,
 		20,
-		rl.BLUE,
+		rl.GREEN,
 	)
 
 	rl.DrawText(
@@ -27,6 +27,22 @@ draw_ui :: proc() {
 		45,
 		20,
 		rl.BLUE,
+	)
+
+		rl.DrawText(
+		fmt.ctprintf("Status: %v", game_state.interactables[player.pos.x][player.pos.y].status),
+		190,
+		25,
+		20,
+		rl.ORANGE,
+	)
+
+	rl.DrawText(
+		fmt.ctprintf("Type: %v", game_state.interactables[player.pos.x][player.pos.y].type),
+		190,
+		45,
+		20,
+		rl.ORANGE,
 	)
 
 
