@@ -9,6 +9,12 @@ handle_game_over_key_input :: proc() {
 	}
 }
 
+handle_left_click :: proc(pos: Vec2i) {
+	if rl.IsMouseButtonPressed(.LEFT) {
+		mine_block(pos.x, pos.y)
+	}
+}
+
 handle_player_mouse_position :: proc() {
 	// Calculate direction toward mouse (prioritizing horizontal movement)
 	game_state.target = get_grid_coordinates_from_mouse()
