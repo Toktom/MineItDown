@@ -12,7 +12,7 @@ BlockType :: enum {
 	MossyStone,
 	MossyStoneCracked,
 }
-BlockState :: enum {
+State :: enum {
 	Active,
 	Inactive,
 }
@@ -22,4 +22,16 @@ Direction :: enum {
 	Down,
 	Left,
 	Right,
+}
+
+InteractableType :: enum {
+	None,
+	BombSquare,
+	BombHorizontal,
+	BombVertical,
+	BombCross,
+	BombDiagonal,
+	Gem,
+	King,
+	Door
 }
