@@ -57,7 +57,7 @@ init_blocks :: proc() {
 	}
 }
 
-draw_blocks :: proc() {
+render_active_blocks :: proc() {
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
 			block := &game_state.blocks[x][y]

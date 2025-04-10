@@ -30,8 +30,9 @@ render :: proc() {
 	}
 	rl.BeginMode2D(camera)
 
-	draw_background_board()
-	draw_blocks()
+	render_background_board()
+	render_active_blocks()
+	render_active_interactables()
 	player->draw()
 
 	//draw_player()

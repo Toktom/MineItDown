@@ -62,7 +62,7 @@ init_interactables :: proc() {
 	}
 }
 
-draw_interactables :: proc() {
+render_active_interactables :: proc() {
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
 			interactable := &game_state.interactables[x][y]

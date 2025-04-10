@@ -11,7 +11,7 @@ init_grid_cells :: proc() {
 	}
 }
 
-draw_background_board :: proc() {
+render_background_board :: proc() {
 	// Draw big rectangle background with offset
 	background_rect := rl.Rectangle{BOARD_OFFSET_X, BOARD_OFFSET_Y, BOARD_SIZE_WIDTH, BOARD_SIZE_HEIGHT}
 	rl.DrawRectangleRec(background_rect, BOARD_COLORS_MAP[BoardColorType.Background])
