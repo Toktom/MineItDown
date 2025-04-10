@@ -16,3 +16,17 @@ BLOCKS_COLORS_MAP: map[BlockType]rl.Color = map[BlockType]rl.Color {
 	.MossyStoneCracked = rl.Color{75, 255, 0, 255}, // Red for cracked mossy stone blocks
 	.Empty             = rl.Color{0, 0, 0, 0}, // Transparent for empty blocks
 }
+
+
+INTERACTABLE_COLORS_MAP: map[InteractableType]rl.Color = map[InteractableType]rl.Color {
+	.None =       rl.Color{0, 0, 0, 0}, // Transparent for none interactable
+	.BombSquare = rl.Color{255, 0, 0, 255}, // Red for bomb square
+	.BombHorizontal = rl.Color{255, 128, 0, 255}, // Orange for bomb horizontal
+	.BombVertical = rl.Color{255, 255, 0, 255}, // Yellow for bomb vertical
+	.BombCross = rl.Color{128, 255, 0, 255}, // Green for bomb cross
+	.BombDiagonal = rl.Color{0, 255, 128, 255}, // Light green for bomb diagonal
+	.Gem = rl.Color{0, 0, 255, 255}, // Blue for gem
+	.King = rl.Color{255, 0, 255, 255}, // Purple for king
+	.Door = rl.Color{255, 255, 255, 255}, // White for door
+
+}
