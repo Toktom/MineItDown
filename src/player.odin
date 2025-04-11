@@ -23,10 +23,10 @@ init_player :: proc() {
 	}
 	player.draw = proc(player: ^Player) {
 		current_pos := convert_grid_to_screen(player.pos)
-		source_rect := rl.Rectangle{0, 0, f32(SPRITE_TEXTURE_SIZE), f32(SPRITE_TEXTURE_SIZE)}
+		source_rect := load_texture_from_atlas_as_rectangle("selection")
 		dest_rect := rl.Rectangle{current_pos.x, current_pos.y, CELL_SIZE, CELL_SIZE}
 
-		rl.DrawTexturePro(player_sprite, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
+		rl.DrawTexturePro(atlas_texture, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
 	}
 	// Set initial player position
 	player.pos = {GRID_WIDTH / 2, GRID_HEIGHT / 2}

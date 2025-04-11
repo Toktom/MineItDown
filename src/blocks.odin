@@ -23,24 +23,30 @@ init_block :: proc(grid_pos: Vec2i) -> Block {
 		health = 1,
 	}
 
-	// Pre-compute drawing values
-	block.screen_pos = convert_grid_to_screen(grid_pos)
-	block.source_rect = rl.Rectangle{0, 0, f32(SPRITE_TEXTURE_SIZE), f32(SPRITE_TEXTURE_SIZE)}
-	block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
-
-	block.draw = proc(block: ^Block) {
-		// Use cached values instead of recalculating
-		switch block.type {
-		case BlockType.Stone:
-			rl.DrawTexturePro(stone_sprite, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
-		case BlockType.MossyStone:
-			rl.DrawTexturePro(mossy_stone_sprite, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
-		case BlockType.MossyStoneCracked:
-			rl.DrawTexturePro(mossy_stone_cracked_sprite, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
-		case BlockType.Empty:
-		// Do nothing for empty cells
-		}
-	}
+	// Use corresponding texture for block type
+    texture_name := "stone"  // Default to stone texture
+    block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
+    block.screen_pos = convert_grid_to_screen(grid_pos)
+    block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
+    block.draw = proc(block: ^Block) {
+        // Use cached values instead of recalculating
+        texture_name: string
+        
+        switch block.type {
+        case BlockType.Stone:
+            texture_name = "stone"
+        case BlockType.MossyStone:
+            texture_name = "mossy_stone"
+        case BlockType.MossyStoneCracked:
+            texture_name = "mossy_stone_cracked"
+        case BlockType.Empty:
+            return // Don't draw anything for empty cells
+        }
+        // Update source rectangle based on current block type
+        block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
+        rl.DrawTexturePro(atlas_texture, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
+		
+    }
 	return block
 }
 
@@ -106,6 +112,7 @@ change_block :: proc(x: int, y: int, new_block_type: BlockType) {
 			block.health = 0
 		}
 	}
+	update_block_drawing_cache(block)
 }
 
 is_block_active :: proc(x: int, y: int) -> bool {

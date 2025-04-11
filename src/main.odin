@@ -13,7 +13,7 @@ set_window_icon :: proc() {
 }
 
 cleanup_game :: proc() {
-	unload_sprites()
+	unload_atlas()
 	rl.ShowCursor()
 	rl.CloseWindow()
 }
@@ -56,13 +56,13 @@ update :: proc() {
 
 
 setup_game :: proc() {
+	//rl.SetTraceLogLevel(rl.TraceLogLevel.NONE)
 	rl.SetConfigFlags({.VSYNC_HINT})
 	rl.InitWindow(WINDOW_SIZE_PX, WINDOW_SIZE_PX, "Mine It Down!")
 	rl.HideCursor()
 	set_window_icon()
-
+	init_atlas()
 	init_game()
-	load_sprites()
 }
 
 game_loop :: proc() {
