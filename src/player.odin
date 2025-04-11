@@ -26,7 +26,7 @@ init_player :: proc() {
 		source_rect := load_texture_from_atlas_as_rectangle("selection")
 		dest_rect := rl.Rectangle{current_pos.x, current_pos.y, CELL_SIZE, CELL_SIZE}
 
-		rl.DrawTexturePro(atlas_texture, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
+		rl.DrawTexturePro(atlas.texture, source_rect, dest_rect, {0, 0}, 0, rl.WHITE)
 	}
 	// Set initial player position
 	player.pos = {GRID_WIDTH / 2, GRID_HEIGHT / 2}

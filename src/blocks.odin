@@ -24,35 +24,35 @@ init_block :: proc(grid_pos: Vec2i) -> Block {
 	}
 
 	// Use corresponding texture for block type
-    texture_name := "stone"  // Default to stone texture
-    block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
-    block.screen_pos = convert_grid_to_screen(grid_pos)
-    block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
-    block.draw = proc(block: ^Block) {
-        // Use cached values instead of recalculating
-        texture_name: string
-        
-        switch block.type {
-        case BlockType.Stone:
-            texture_name = "stone"
-        case BlockType.MossyStone:
-            texture_name = "mossy_stone"
-        case BlockType.MossyStoneCracked:
-            texture_name = "mossy_stone_cracked"
-        case BlockType.Empty:
-            return // Don't draw anything for empty cells
-        }
-        // Update source rectangle based on current block type
-        block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
-        rl.DrawTexturePro(atlas_texture, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
-		
-    }
+	texture_name := "stone" // Default to stone texture
+	block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
+	block.screen_pos = convert_grid_to_screen(grid_pos)
+	block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
+	block.draw = proc(block: ^Block) {
+		// Use cached values instead of recalculating
+		texture_name: string
+
+		switch block.type {
+		case BlockType.Stone:
+			texture_name = "stone"
+		case BlockType.MossyStone:
+			texture_name = "mossy_stone"
+		case BlockType.MossyStoneCracked:
+			texture_name = "mossy_stone_cracked"
+		case BlockType.Empty:
+			return // Don't draw anything for empty cells
+		}
+		// Update source rectangle based on current block type
+		block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
+		rl.DrawTexturePro(atlas.texture, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
+
+	}
 	return block
 }
 
 update_block_drawing_cache :: proc(block: ^Block) {
-    block.screen_pos = convert_grid_to_screen(block.pos)
-    block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
+	block.screen_pos = convert_grid_to_screen(block.pos)
+	block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
 }
 
 init_blocks :: proc() {
