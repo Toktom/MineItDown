@@ -12,7 +12,7 @@ handle_game_over_key_input :: proc() {
 handle_left_click :: proc(pos: Vec2i) {
 	if rl.IsMouseButtonPressed(.LEFT) {
 		if game_state.blocks[pos.x][pos.y].status == State.Active {
-			mine_block(pos.x, pos.y)
+			damage_block(pos.x, pos.y)
 		} else {
 			if game_state.interactables[pos.x][pos.y].status == State.Active {
 				activate_interactable(pos.x, pos.y)

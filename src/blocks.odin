@@ -2,7 +2,6 @@ package mineitdown
 
 import rl "vendor:raylib"
 
-
 Block :: struct {
 	pos:         Vec2i,
 	status:      State,
@@ -23,27 +22,49 @@ init_block :: proc(grid_pos: Vec2i) -> Block {
 		health = 1,
 	}
 
-	// Use corresponding texture for block type
-	block.source_rect = load_texture_from_atlas_as_rectangle("stone")
-	block.screen_pos = convert_grid_to_screen(grid_pos)
+	update_block_appearance(&block)
+	return block
+}
+
+update_block_appearance :: proc(block: ^Block) {
+	// Update visual properties based on block type
+	texture_name := get_block_texture_name(block.type)
+	if texture_name != "" {
+		block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
+	}
+	
+	block.screen_pos = convert_grid_to_screen(block.pos)
 	block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
-	block.draw = proc(block: ^Block) {
-		// Use cached values instead of recalculating
-		texture_name: string
-		switch block.type {
-		case BlockType.Stone:
-			texture_name = "stone"
-		case BlockType.MossyStone:
-			texture_name = "mossy_stone"
-		case BlockType.MossyStoneCracked:
-			texture_name = "mossy_stone_cracked"
-		case BlockType.Empty:
+	
+	if block.draw == nil {
+		block.draw = create_block_draw_proc()
+	}
+}
+
+get_block_texture_name :: proc(block_type: BlockType) -> string {
+	switch block_type {
+	case BlockType.Stone:
+		return "stone"
+	case BlockType.MossyStone:
+		return "mossy_stone"
+	case BlockType.MossyStoneCracked:
+		return "mossy_stone_cracked"
+	case BlockType.Empty:
+		return ""
+	}
+	return ""
+}
+
+create_block_draw_proc :: proc() -> proc(block: ^Block) {
+	return proc(block: ^Block) {
+		texture_name := get_block_texture_name(block.type)
+		if texture_name == "" {
 			return // Don't draw anything for empty cells
 		}
+		
 		block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
 		rl.DrawTexturePro(atlas.texture, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
 	}
-	return block
 }
 
 update_block_drawing_cache :: proc(block: ^Block) {
@@ -71,44 +92,45 @@ render_active_blocks :: proc() {
 	}
 }
 
-remove_block :: proc(x: int, y: int) {
+deactivate_block :: proc(x: int, y: int) {
 	block := &game_state.blocks[x][y]
 	if block.status == State.Active {
 		block.status = State.Inactive
 		block.type = BlockType.Empty
 		block.health = 0
 	}
-
 }
 
-mine_block :: proc(x: int, y: int) {
+damage_block :: proc(x: int, y: int) {
 	block := &game_state.blocks[x][y]
 	block.health = max(0, block.health - player.damage)
 	
 	if block.type == BlockType.MossyStone && block.health == 1 {
-		change_block(x, y, BlockType.MossyStoneCracked)
+		set_block_type(x, y, BlockType.MossyStoneCracked)
 	} else if block.health <= 0 {
-		remove_block(x, y)
+		deactivate_block(x, y)
 	}
 }
 
-change_block :: proc(x: int, y: int, new_block_type: BlockType) {
+set_block_type :: proc(x: int, y: int, new_block_type: BlockType) {
 	block := &game_state.blocks[x][y]
 	if block.status == State.Active {
-		switch new_block_type {
-		case BlockType.Stone:
-			block.type = BlockType.Stone
-			block.health = 1
-		case BlockType.MossyStone:
-			block.type = BlockType.MossyStone
-			block.health = 2
-		case BlockType.MossyStoneCracked:
-			block.type = BlockType.MossyStoneCracked
-			block.health = 1
-		case BlockType.Empty:
-			block.type = BlockType.Empty
-			block.health = 0
-		}
+		block.type = new_block_type
+		apply_block_type_properties(block)
+		update_block_appearance(block)
+	}
+}
+
+apply_block_type_properties :: proc(block: ^Block) {
+	switch block.type {
+	case BlockType.Stone:
+		block.health = 1
+	case BlockType.MossyStone:
+		block.health = 2
+	case BlockType.MossyStoneCracked:
+		block.health = 1
+	case BlockType.Empty:
+		block.health = 0
 	}
 }
 

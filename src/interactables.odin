@@ -170,7 +170,7 @@ mine_surrounding_blocks :: proc(x: int, y: int) {
 			if row == 0 && col == 0 {
 				continue // Skip the center block
 			}
-			mine_block(x + row, y + col)
+			damage_block(x + row, y + col)
 		}
 	}
 }
@@ -179,7 +179,7 @@ mine_surrounding_blocks :: proc(x: int, y: int) {
 mine_blocks_horizontally :: proc(x: int, y: int) {
 	for col in 0 ..< GRID_WIDTH {
 		if game_state.blocks[col][y].status == State.Active {
-			mine_block(col, y)
+			damage_block(col, y)
 		}
 	}
 }
@@ -188,7 +188,7 @@ mine_blocks_horizontally :: proc(x: int, y: int) {
 mine_blocks_vertically :: proc(x: int, y: int) {
 	for row in 0 ..< GRID_HEIGHT {
 		if game_state.blocks[x][row].status == State.Active {
-			mine_block(x, row)
+			damage_block(x, row)
 		}
 	}
 }
