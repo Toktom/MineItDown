@@ -113,7 +113,7 @@ is_interactable_active :: proc(x: int, y: int) -> bool {
 	return interactable.status == State.Active
 }
 
-add_interactable :: proc(x: int, y: int, interactable_type: InteractableType) {
+set_interactable_type :: proc(x: int, y: int, interactable_type: InteractableType) {
 	interactable := &game_state.interactables[x][y]
 	if interactable.status == State.Active {
 		interactable.type = interactable_type

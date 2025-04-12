@@ -30,10 +30,10 @@ init_game :: proc() {
 	set_block_type(1, 1, BlockType.MossyStoneCracked)
 	set_block_type(2, 2, BlockType.MossyStone)
 	set_block_type(3, 3, BlockType.MossyStone)
-	add_interactable(1, 1, InteractableType.BombCross)
-	add_interactable(2, 2, InteractableType.BombVertical)
-	add_interactable(0, 1, InteractableType.BombHorizontal)
-	add_interactable(3, 3, InteractableType.BombSquare)
+	set_interactable_type(1, 1, InteractableType.BombCross)
+	set_interactable_type(2, 2, InteractableType.BombVertical)
+	set_interactable_type(0, 1, InteractableType.BombHorizontal)
+	set_interactable_type(3, 3, InteractableType.BombSquare)
 }
 
 
