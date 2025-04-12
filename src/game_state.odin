@@ -30,6 +30,8 @@ init_game :: proc() {
 	change_block(1, 1, BlockType.MossyStoneCracked)
 	change_block(2, 2, BlockType.MossyStone)
 	change_block(3, 3, BlockType.MossyStone)
+	add_interactable(1, 1, InteractableType.BombCross)
+	add_interactable(2, 2, InteractableType.BombHorizontal)
 }
 
 

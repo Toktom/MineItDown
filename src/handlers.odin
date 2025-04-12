@@ -11,8 +11,16 @@ handle_game_over_key_input :: proc() {
 
 handle_left_click :: proc(pos: Vec2i) {
 	if rl.IsMouseButtonPressed(.LEFT) {
-		mine_block(pos.x, pos.y)
+		if game_state.blocks[pos.x][pos.y].status == State.Active {
+			mine_block(pos.x, pos.y)
+		} else {
+			if game_state.interactables[pos.x][pos.y].status == State.Active {
+				interact_with_interactable(pos.x, pos.y)
+			}
+		}
 	}
+
+
 }
 
 handle_player_mouse_position :: proc() {

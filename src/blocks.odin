@@ -24,14 +24,12 @@ init_block :: proc(grid_pos: Vec2i) -> Block {
 	}
 
 	// Use corresponding texture for block type
-	texture_name := "stone" // Default to stone texture
-	block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
+	block.source_rect = load_texture_from_atlas_as_rectangle("stone")
 	block.screen_pos = convert_grid_to_screen(grid_pos)
 	block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
 	block.draw = proc(block: ^Block) {
 		// Use cached values instead of recalculating
 		texture_name: string
-
 		switch block.type {
 		case BlockType.Stone:
 			texture_name = "stone"
@@ -42,10 +40,8 @@ init_block :: proc(grid_pos: Vec2i) -> Block {
 		case BlockType.Empty:
 			return // Don't draw anything for empty cells
 		}
-		// Update source rectangle based on current block type
 		block.source_rect = load_texture_from_atlas_as_rectangle(texture_name)
 		rl.DrawTexturePro(atlas.texture, block.source_rect, block.dest_rect, {0, 0}, 0, rl.WHITE)
-
 	}
 	return block
 }
@@ -88,8 +84,10 @@ remove_block :: proc(x: int, y: int) {
 mine_block :: proc(x: int, y: int) {
 	block := &game_state.blocks[x][y]
 	block.health = max(0, block.health - player.damage)
-
-	if block.health <= 0 {
+	
+	if block.type == BlockType.MossyStone && block.health == 1 {
+		change_block(x, y, BlockType.MossyStoneCracked)
+	} else if block.health <= 0 {
 		remove_block(x, y)
 	}
 }
@@ -112,7 +110,6 @@ change_block :: proc(x: int, y: int, new_block_type: BlockType) {
 			block.health = 0
 		}
 	}
-	update_block_drawing_cache(block)
 }
 
 is_block_active :: proc(x: int, y: int) -> bool {
