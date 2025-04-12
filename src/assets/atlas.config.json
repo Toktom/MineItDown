@@ -1,4 +1,5 @@
 {
   "name": "atlas",
-  "format": "json-hash"
+  "format": "json-hash",
+  "allowRotation": false
 }

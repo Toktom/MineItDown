@@ -24,7 +24,6 @@ INTERACTABLE_COLORS_MAP: map[InteractableType]rl.Color = map[InteractableType]rl
 	.BombHorizontal = rl.Color{255, 128, 0, 255}, // Orange for bomb horizontal
 	.BombVertical   = rl.Color{255, 255, 0, 255}, // Yellow for bomb vertical
 	.BombCross      = rl.Color{128, 255, 0, 255}, // Green for bomb cross
-	.BombDiagonal   = rl.Color{0, 255, 128, 255}, // Light green for bomb diagonal
 	.Gem            = rl.Color{0, 0, 255, 255}, // Blue for gem
 	.King           = rl.Color{255, 0, 255, 255}, // Purple for king
 	.Door           = rl.Color{255, 255, 255, 255}, // White for door

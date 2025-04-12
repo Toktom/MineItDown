@@ -167,6 +167,54 @@
         "x": 0.5,
         "y": 0.5
       }
+    },
+    "bomb_square": {
+      "frame": {
+        "x": 0,
+        "y": 111,
+        "w": 8,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 2,
+        "w": 8,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "bomb_v": {
+      "frame": {
+        "x": 0,
+        "y": 123,
+        "w": 16,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 6,
+        "w": 16,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
     }
   },
   "meta": {
@@ -176,7 +224,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 16,
-      "h": 111
+      "h": 133
     },
     "scale": 1
   }

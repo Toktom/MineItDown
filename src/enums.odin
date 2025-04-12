@@ -30,7 +30,6 @@ InteractableType :: enum {
 	BombHorizontal,
 	BombVertical,
 	BombCross,
-	BombDiagonal,
 	Gem,
 	King,
 	Door
