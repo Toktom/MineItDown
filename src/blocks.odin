@@ -73,8 +73,9 @@ update_block_drawing_cache :: proc(block: ^Block) {
 }
 
 init_blocks :: proc(grid_cells: ^Grid2i) -> Blocks2i {
-	blocks : Blocks2i
+	blocks := make(Blocks2i, GRID_WIDTH)
 	for x in 0 ..< GRID_WIDTH {
+		blocks[x] = make([dynamic]Block, GRID_HEIGHT)
 		for y in 0 ..< GRID_HEIGHT {
 			blocks[x][y] = init_block(grid_cells[x][y])
 		}

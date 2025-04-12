@@ -19,17 +19,8 @@ init_game :: proc(level: int) {
 			game_state.game_over = true
 		}
 	}
-
-	init_level(level)
+	init_level_0()
 	init_player()
-	deactivate_block(1, 1)
-	set_block_type(1, 1, BlockType.MossyStoneCracked)
-	set_block_type(2, 2, BlockType.MossyStone)
-	set_block_type(3, 3, BlockType.MossyStone)
-	set_interactable_type(1, 1, InteractableType.BombCross)
-	set_interactable_type(2, 2, InteractableType.BombVertical)
-	set_interactable_type(0, 1, InteractableType.BombHorizontal)
-	set_interactable_type(3, 3, InteractableType.BombSquare)
 }
 
 
@@ -39,7 +30,7 @@ is_game_over :: proc() -> bool {
 
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
-			if get_block(x, y).status == State.Inactive {
+			if get_block(x, y).status == State.Inactive && get_current_level().level == 2 {
 				inactive_blocks += 1
 			}
 		}

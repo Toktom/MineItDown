@@ -27,7 +27,7 @@ init_interactable :: proc(grid_pos: Vec2i) -> Interactable {
 		texture_name: string
 		switch interactable.type {
 		case InteractableType.Door:
-			texture_name = "door"
+			texture_name = "stone_cracked"
 		case InteractableType.Gem:
 			texture_name = "gem"
 		case InteractableType.King:
@@ -94,8 +94,9 @@ update_interactable_drawing_cache :: proc(interactable: ^Interactable) {
 }
 
 init_interactables :: proc(grid_cells: ^Grid2i) -> Interactables2i {
-	interactables: Interactables2i
+	interactables := make(Interactables2i, GRID_WIDTH)
 	for x in 0 ..< GRID_WIDTH {
+		interactables[x] = make([dynamic]Interactable, GRID_HEIGHT)
 		for y in 0 ..< GRID_HEIGHT {
 			interactables[x][y] = init_interactable(grid_cells[x][y])
 		}
@@ -146,7 +147,9 @@ activate_interactable :: proc(x: int, y: int) {
 	}
 
 	switch interactable.type {
-	case InteractableType.Door, InteractableType.Gem, InteractableType.King:
+	case InteractableType.Door:
+		load_level(get_current_level().level + 1)
+	case InteractableType.Gem, InteractableType.King:
 		game_state.game_over = true
 	case InteractableType.BombSquare:
 		apply_bomb_effect(x, y, mine_surrounding_blocks)

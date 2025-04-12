@@ -3,9 +3,10 @@ package mineitdown
 import rl "vendor:raylib"
 
 
-init_grid_cells :: proc() -> Grid2i{
-	grid_cells : Grid2i
+init_grid_cells :: proc() -> Grid2i {
+	grid_cells := make(Grid2i, GRID_WIDTH)
 	for x in 0 ..< GRID_WIDTH {
+		grid_cells[x] = make([dynamic]Vec2i, GRID_HEIGHT)
 		for y in 0 ..< GRID_HEIGHT {
 			grid_cells[x][y] = {x, y}
 		}
