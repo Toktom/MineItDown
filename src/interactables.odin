@@ -132,57 +132,63 @@ remove_interactable :: proc(x: int, y: int) {
 	}
 }
 
-interact_with_interactable :: proc(x: int, y: int) {
+activate_interactable :: proc(x: int, y: int) {
 	interactable := &game_state.interactables[x][y]
-	if interactable.status == State.Active {
-		switch interactable.type {
-		case InteractableType.Door:
-			game_state.game_over = true
-		case InteractableType.Gem:
-			game_state.game_over = true
-		case InteractableType.King:
-			game_state.game_over = true
-		case InteractableType.BombSquare:
-			for i in -1 ..< 2 {
-				for j in -1 ..< 2 {
-					if i == 0 && j == 0 {
-						continue // Skip the center block
-					}
-					mine_block(x + i, y + j)
-				}
+	if interactable.status != State.Active {
+		return
+	}
+
+	switch interactable.type {
+	case InteractableType.Door, InteractableType.Gem, InteractableType.King:
+		game_state.game_over = true
+	case InteractableType.BombSquare:
+		apply_bomb_effect(x, y, mine_surrounding_blocks)
+	case InteractableType.BombHorizontal:
+		apply_bomb_effect(x, y, mine_blocks_horizontally)
+	case InteractableType.BombVertical:
+		apply_bomb_effect(x, y, mine_blocks_vertically)
+	case InteractableType.BombCross:
+		apply_bomb_effect(x, y, proc(x, y: int) {
+			mine_blocks_horizontally(x, y)
+			mine_blocks_vertically(x, y)
+		})
+	case InteractableType.None:
+		return
+	}
+}
+
+// Helper to apply bomb effect and then remove the bomb
+apply_bomb_effect :: proc(x: int, y: int, effect: proc(x: int, y: int)) {
+	effect(x, y)
+	remove_interactable(x, y)
+}
+
+// Mine blocks in a 3x3 area, excluding the center
+mine_surrounding_blocks :: proc(x: int, y: int) {
+	for row in -1 ..< 2 {
+		for col in -1 ..< 2 {
+			if row == 0 && col == 0 {
+				continue // Skip the center block
 			}
-			remove_interactable(x, y)
-		case InteractableType.BombHorizontal:
-			mine_all_blocks_in_x_direction(x, y)
-			remove_interactable(x, y)
-		case InteractableType.BombVertical:
-			mine_all_blocks_in_y_direction(x, y)
-			remove_interactable(x, y)
-		case InteractableType.BombCross:
-			mine_all_blocks_in_x_direction(x, y)
-			mine_all_blocks_in_y_direction(x, y)
-			remove_interactable(x, y)
-		case InteractableType.None:
-			return
-
+			mine_block(x + row, y + col)
 		}
 	}
 }
 
-
-mine_all_blocks_in_y_direction :: proc(x: int, y: int) {
-	// Remove blocks in the x direction (left and right)
-	for i in 0 ..< GRID_WIDTH {
-		if game_state.blocks[i][y].status == State.Active {
-			mine_block(i, y)
+// Mine all blocks in the row
+mine_blocks_horizontally :: proc(x: int, y: int) {
+	for col in 0 ..< GRID_WIDTH {
+		if game_state.blocks[col][y].status == State.Active {
+			mine_block(col, y)
 		}
 	}
 }
-mine_all_blocks_in_x_direction :: proc(x: int, y: int) {
-	// Remove blocks in the y direction (up and down)
-	for j in 0 ..< GRID_HEIGHT {
-		if game_state.blocks[x][j].status == State.Active {
-			mine_block(x, j)
+
+// Mine all blocks in the column
+mine_blocks_vertically :: proc(x: int, y: int) {
+	for row in 0 ..< GRID_HEIGHT {
+		if game_state.blocks[x][row].status == State.Active {
+			mine_block(x, row)
 		}
 	}
 }
