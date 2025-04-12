@@ -14,7 +14,7 @@ draw_ui :: proc() {
 	)
 
 	rl.DrawText(
-		fmt.ctprintf("Status: %v", game_state.blocks[player.pos.x][player.pos.y].status),
+		fmt.ctprintf("Status: %v", get_block(player.pos.x, player.pos.y).status),
 		5,
 		25,
 		20,
@@ -22,7 +22,7 @@ draw_ui :: proc() {
 	)
 
 	rl.DrawText(
-		fmt.ctprintf("Health: %v", game_state.blocks[player.pos.x][player.pos.y].health),
+		fmt.ctprintf("Health: %v", get_block(player.pos.x, player.pos.y).health),
 		5,
 		45,
 		20,
@@ -30,7 +30,7 @@ draw_ui :: proc() {
 	)
 
 		rl.DrawText(
-		fmt.ctprintf("Status: %v", game_state.interactables[player.pos.x][player.pos.y].status),
+		fmt.ctprintf("Status: %v", get_interactable(player.pos.x, player.pos.y).status),
 		190,
 		25,
 		20,
@@ -38,7 +38,7 @@ draw_ui :: proc() {
 	)
 
 	rl.DrawText(
-		fmt.ctprintf("Type: %v", game_state.interactables[player.pos.x][player.pos.y].type),
+		fmt.ctprintf("Type: %v", get_interactable(player.pos.x, player.pos.y).type),
 		190,
 		45,
 		20,

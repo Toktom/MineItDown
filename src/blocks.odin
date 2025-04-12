@@ -72,19 +72,20 @@ update_block_drawing_cache :: proc(block: ^Block) {
 	block.dest_rect = rl.Rectangle{block.screen_pos.x, block.screen_pos.y, CELL_SIZE, CELL_SIZE}
 }
 
-init_blocks :: proc() {
+init_blocks :: proc(grid_cells: ^Grid2i) -> Blocks2i {
+	blocks : Blocks2i
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
-			game_state.blocks[x][y] = init_block(game_state.grid_cells[x][y])
+			blocks[x][y] = init_block(grid_cells[x][y])
 		}
 	}
+	return blocks
 }
 
 render_active_blocks :: proc() {
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
-			block := &game_state.blocks[x][y]
-
+			block := get_block(x, y)
 			if block.status == State.Active {
 				block->draw()
 			}
@@ -92,8 +93,13 @@ render_active_blocks :: proc() {
 	}
 }
 
+// Add helper function to get block reference - reduces repetition
+get_block :: proc(x, y: int) -> ^Block {
+	return &game_state.current_level.blocks[x][y]
+}
+
 deactivate_block :: proc(x: int, y: int) {
-	block := &game_state.blocks[x][y]
+	block := get_block(x, y)
 	if block.status == State.Active {
 		block.status = State.Inactive
 		block.type = BlockType.Empty
@@ -102,7 +108,7 @@ deactivate_block :: proc(x: int, y: int) {
 }
 
 damage_block :: proc(x: int, y: int) {
-	block := &game_state.blocks[x][y]
+	block := get_block(x, y)
 	block.health = max(0, block.health - player.damage)
 	
 	if block.type == BlockType.MossyStone && block.health == 1 {
@@ -113,7 +119,7 @@ damage_block :: proc(x: int, y: int) {
 }
 
 set_block_type :: proc(x: int, y: int, new_block_type: BlockType) {
-	block := &game_state.blocks[x][y]
+	block := get_block(x, y)
 	if block.status == State.Active {
 		block.type = new_block_type
 		apply_block_type_properties(block)
@@ -135,6 +141,5 @@ apply_block_type_properties :: proc(block: ^Block) {
 }
 
 is_block_active :: proc(x: int, y: int) -> bool {
-	block := game_state.blocks[x][y]
-	return block.status == State.Active
+	return get_block(x, y).status == State.Active
 }

@@ -83,25 +83,32 @@ init_interactable :: proc(grid_pos: Vec2i) -> Interactable {
 	return interactable
 }
 
+get_interactable :: proc(x: int, y: int) -> ^Interactable {
+	interactable := &game_state.current_level.interactables[x][y]
+	return interactable
+}
+
 update_interactable_drawing_cache :: proc(interactable: ^Interactable) {
 	interactable.screen_pos = convert_grid_to_screen(interactable.pos)
 	interactable.dest_rect = rl.Rectangle{interactable.screen_pos.x, interactable.screen_pos.y, CELL_SIZE, CELL_SIZE}
 }
 
-init_interactables :: proc() {
+init_interactables :: proc(grid_cells: ^Grid2i) -> Interactables2i {
+	interactables: Interactables2i
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
-			game_state.interactables[x][y] = init_interactable(game_state.grid_cells[x][y])
+			interactables[x][y] = init_interactable(grid_cells[x][y])
 		}
 	}
+	return interactables
 }
 
 render_active_interactables :: proc() {
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
-			interactable := &game_state.interactables[x][y]
+			interactable := get_interactable(x, y)
 
-			if interactable.status == State.Active && game_state.blocks[x][y].status == State.Inactive {
+			if interactable.status == State.Active && get_block(x, y).status == State.Inactive {
 				interactable->draw()
 			}
 		}
@@ -109,12 +116,12 @@ render_active_interactables :: proc() {
 }
 
 is_interactable_active :: proc(x: int, y: int) -> bool {
-	interactable := game_state.interactables[x][y]
+	interactable := game_state.current_level.interactables[x][y]
 	return interactable.status == State.Active
 }
 
 set_interactable_type :: proc(x: int, y: int, interactable_type: InteractableType) {
-	interactable := &game_state.interactables[x][y]
+	interactable := get_interactable(x, y)
 	if interactable.status == State.Active {
 		interactable.type = interactable_type
 	} else {
@@ -125,7 +132,7 @@ set_interactable_type :: proc(x: int, y: int, interactable_type: InteractableTyp
 }
 
 remove_interactable :: proc(x: int, y: int) {
-	interactable := &game_state.interactables[x][y]
+	interactable := get_interactable(x, y)
 	if interactable.status == State.Active {
 		interactable.status = State.Inactive
 		interactable.type = InteractableType.None
@@ -133,7 +140,7 @@ remove_interactable :: proc(x: int, y: int) {
 }
 
 activate_interactable :: proc(x: int, y: int) {
-	interactable := &game_state.interactables[x][y]
+	interactable := get_interactable(x, y)
 	if interactable.status != State.Active {
 		return
 	}
@@ -178,7 +185,7 @@ mine_surrounding_blocks :: proc(x: int, y: int) {
 // Mine all blocks in the row
 mine_blocks_horizontally :: proc(x: int, y: int) {
 	for col in 0 ..< GRID_WIDTH {
-		if game_state.blocks[col][y].status == State.Active {
+		if get_block(col, y).status == State.Active {
 			damage_block(col, y)
 		}
 	}
@@ -187,7 +194,7 @@ mine_blocks_horizontally :: proc(x: int, y: int) {
 // Mine all blocks in the column
 mine_blocks_vertically :: proc(x: int, y: int) {
 	for row in 0 ..< GRID_HEIGHT {
-		if game_state.blocks[x][row].status == State.Active {
+		if get_block(x, row).status == State.Active {
 			damage_block(x, row)
 		}
 	}

@@ -62,7 +62,7 @@ setup_game :: proc() {
 	rl.HideCursor()
 	set_window_icon()
 	init_atlas()
-	init_game()
+	init_game(0)
 }
 
 game_loop :: proc() {

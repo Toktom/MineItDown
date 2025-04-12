@@ -5,16 +5,16 @@ import rl "vendor:raylib"
 
 handle_game_over_key_input :: proc() {
 	if rl.IsKeyPressed(.R) {
-		init_game()
+		init_game(0)
 	}
 }
 
 handle_left_click :: proc(pos: Vec2i) {
 	if rl.IsMouseButtonPressed(.LEFT) {
-		if game_state.blocks[pos.x][pos.y].status == State.Active {
+		if get_block(pos.x, pos.y).status == State.Active {
 			damage_block(pos.x, pos.y)
 		} else {
-			if game_state.interactables[pos.x][pos.y].status == State.Active {
+			if get_interactable(pos.x, pos.y).status == State.Active {
 				activate_interactable(pos.x, pos.y)
 			}
 		}

@@ -3,12 +3,14 @@ package mineitdown
 import rl "vendor:raylib"
 
 
-init_grid_cells :: proc() {
+init_grid_cells :: proc() -> Grid2i{
+	grid_cells : Grid2i
 	for x in 0 ..< GRID_WIDTH {
 		for y in 0 ..< GRID_HEIGHT {
-			game_state.grid_cells[x][y] = {x, y}
+			grid_cells[x][y] = {x, y}
 		}
 	}
+	return grid_cells
 }
 
 render_background_board :: proc() {
