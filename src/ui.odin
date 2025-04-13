@@ -45,6 +45,13 @@ draw_ui :: proc() {
 		rl.ORANGE,
 	)
 
+	rl.DrawText(
+		fmt.ctprintf("Level: %v", get_current_level().level),
+		900,
+		25,
+		20,
+		rl.GREEN,
+	)
 
 	// Add other UI elements as needed
 	if game_state.game_over {
