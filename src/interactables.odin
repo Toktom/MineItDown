@@ -17,7 +17,7 @@ Interactable :: struct {
 init_interactable :: proc(grid_pos: Vec2i) -> Interactable {
 	interactable := Interactable {
 		pos    = grid_pos,
-		status = State.Active,
+		status = State.Inactive,
 		type   = InteractableType.None,
 	}
 	interactable.screen_pos = convert_grid_to_screen(grid_pos)
@@ -123,12 +123,10 @@ is_interactable_active :: proc(x: int, y: int) -> bool {
 
 set_interactable_type :: proc(x: int, y: int, interactable_type: InteractableType) {
 	interactable := get_interactable(x, y)
-	if interactable.status == State.Active {
-		interactable.type = interactable_type
-	} else {
+	if interactable.status == State.Inactive {
 		interactable.status = State.Active
 		interactable.type = interactable_type
-	}
+	} else {return}
 	update_interactable_drawing_cache(interactable)
 }
 
@@ -148,7 +146,7 @@ activate_interactable :: proc(x: int, y: int) {
 
 	switch interactable.type {
 	case InteractableType.Door:
-		load_level(get_current_level().level + 1)
+		load_next_level()
 	case InteractableType.Gem, InteractableType.King:
 		game_state.game_over = true
 	case InteractableType.BombSquare:
@@ -179,14 +177,22 @@ mine_surrounding_blocks :: proc(x: int, y: int) {
 		for col in -1 ..< 2 {
 			if row == 0 && col == 0 {
 				continue // Skip the center block
+				}
+			// Calculate target coordinates
+			target_x := x + row
+			target_y := y + col
+			// Check if target coordinates are within grid boundaries
+			if target_x >= 0 && target_x < GRID_WIDTH && target_y >= 0 && target_y < GRID_HEIGHT {
+				if get_block(target_x, target_y).status == State.Active {
+					damage_block(target_x, target_y)
+				}
 			}
-			damage_block(x + row, y + col)
 		}
 	}
 }
 
 // Mine all blocks in the row
-mine_blocks_horizontally :: proc(x: int, y: int) {
+mine_blocks_vertically :: proc(x: int, y: int) {
 	for col in 0 ..< GRID_WIDTH {
 		if get_block(col, y).status == State.Active {
 			damage_block(col, y)
@@ -195,7 +201,7 @@ mine_blocks_horizontally :: proc(x: int, y: int) {
 }
 
 // Mine all blocks in the column
-mine_blocks_vertically :: proc(x: int, y: int) {
+mine_blocks_horizontally :: proc(x: int, y: int) {
 	for row in 0 ..< GRID_HEIGHT {
 		if get_block(x, row).status == State.Active {
 			damage_block(x, row)
