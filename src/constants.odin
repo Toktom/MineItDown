@@ -38,3 +38,9 @@ MOVEMENT_VECTORS :: [Direction][2]int {
 	.Left  = {-1, 0},
 	.Right = {1, 0},
 }
+
+// Levels
+MAX_GRID_WIDTH :: 5
+MAX_GRID_HEIGHT :: 5
+MIN_GRID_WIDTH :: 3
+MIN_GRID_HEIGHT :: 3
