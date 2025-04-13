@@ -1,6 +1,6 @@
 {
   "frames": {
-    "mossy_stone": {
+    "down_stairs": {
       "frame": {
         "x": 0,
         "y": 0,
@@ -24,7 +24,7 @@
         "y": 0.5
       }
     },
-    "mossy_stone_cracked": {
+    "mossy_stone": {
       "frame": {
         "x": 0,
         "y": 16,
@@ -48,7 +48,7 @@
         "y": 0.5
       }
     },
-    "selection": {
+    "mossy_stone_cracked": {
       "frame": {
         "x": 0,
         "y": 32,
@@ -72,7 +72,7 @@
         "y": 0.5
       }
     },
-    "stone": {
+    "selection": {
       "frame": {
         "x": 0,
         "y": 48,
@@ -96,7 +96,7 @@
         "y": 0.5
       }
     },
-    "stone_cracked": {
+    "stone": {
       "frame": {
         "x": 0,
         "y": 64,
@@ -120,10 +120,34 @@
         "y": 0.5
       }
     },
-    "bomb_h": {
+    "stone_cracked": {
       "frame": {
         "x": 0,
         "y": 80,
+        "w": 16,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "bomb_h": {
+      "frame": {
+        "x": 0,
+        "y": 96,
         "w": 10,
         "h": 16
       },
@@ -147,7 +171,7 @@
     "bomb": {
       "frame": {
         "x": 0,
-        "y": 96,
+        "y": 112,
         "w": 10,
         "h": 15
       },
@@ -171,7 +195,7 @@
     "bomb_square": {
       "frame": {
         "x": 0,
-        "y": 111,
+        "y": 127,
         "w": 8,
         "h": 12
       },
@@ -195,7 +219,7 @@
     "bomb_v": {
       "frame": {
         "x": 0,
-        "y": 123,
+        "y": 139,
         "w": 16,
         "h": 10
       },
@@ -224,7 +248,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 16,
-      "h": 133
+      "h": 149
     },
     "scale": 1
   }

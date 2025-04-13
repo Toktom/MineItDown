@@ -27,7 +27,7 @@ init_interactable :: proc(grid_pos: Vec2i) -> Interactable {
 		texture_name: string
 		switch interactable.type {
 		case InteractableType.Door:
-			texture_name = "stone_cracked"
+			texture_name = "down_stairs"
 		case InteractableType.Gem:
 			texture_name = "gem"
 		case InteractableType.King:
