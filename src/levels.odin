@@ -75,6 +75,7 @@ generate_level :: proc(current_level: ^Level) {
 	GRID_HEIGHT = rand.int_max(new_max_grid_height - new_min_grid_height) + new_min_grid_height
 
 	init_level(level_number, GRID_WIDTH, GRID_HEIGHT)
+	set_mossy_stone_at_random_position()
     set_door_at_random_position()
     set_bombs_at_random_position_in_level(current_level)
 }
@@ -126,4 +127,14 @@ set_random_bomb_at_position :: proc(x: int, y: int) {
     }
     bomb_type := bomb_types[rand.int_max(len(bomb_types))]
     set_interactable_type(x, y, bomb_type)
+}
+
+set_mossy_stone_at_random_position :: proc() {
+	// set mossy stone at random position but a max of 10% of the grid
+	mossy_stone_count := int(f32(GRID_WIDTH * GRID_HEIGHT) * 0.3)
+	for i in 0 ..< mossy_stone_count {
+		x := rand.int_max(GRID_WIDTH - 1)
+		y := rand.int_max(GRID_HEIGHT - 1)
+		set_block_type(x, y, BlockType.MossyStone)
+	}
 }

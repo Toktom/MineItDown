@@ -20,7 +20,7 @@ cleanup_game :: proc() {
 
 render :: proc() {
 	rl.BeginDrawing()
-	rl.ClearBackground(rl.WHITE)
+	rl.ClearBackground(rl.Color{38, 60, 57, 255})
 
 	camera := rl.Camera2D {
 		target   = {BOARD_OFFSET_X + BOARD_SIZE_WIDTH / 2, BOARD_OFFSET_Y + BOARD_SIZE_HEIGHT / 2},
