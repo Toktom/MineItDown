@@ -2,6 +2,7 @@ package mineitdown
 
 import "core:fmt"
 import "core:math"
+import "core:time"
 import rl "vendor:raylib"
 
 set_window_icon :: proc() {
@@ -13,6 +14,7 @@ set_window_icon :: proc() {
 }
 
 cleanup_game :: proc() {
+	cleanup_particles()
 	unload_atlas()
 	rl.ShowCursor()
 	rl.CloseWindow()
@@ -33,19 +35,23 @@ render :: proc() {
 	render_background_board()
 	render_active_blocks()
 	render_active_interactables()
+	draw_particles()
 	player->draw()
 
-	//draw_player()
 	draw_ui()
 
 	rl.EndMode2D()
 	rl.EndDrawing()
 }
 
-
 update :: proc() {
+	current_time := time.now()
+	delta_time := f32(time.duration_seconds(time.diff(last_frame_time, current_time)))
+	last_frame_time = current_time
+	
 	game_state->update()
 	player->update()
+	update_particles(delta_time)
 
 	if game_state.game_over {
 		handle_game_over_key_input()
@@ -54,7 +60,6 @@ update :: proc() {
 	move_player()
 }
 
-
 setup_game :: proc() {
 	//rl.SetTraceLogLevel(rl.TraceLogLevel.NONE)
 	rl.SetConfigFlags({.VSYNC_HINT})
@@ -62,10 +67,15 @@ setup_game :: proc() {
 	rl.HideCursor()
 	set_window_icon()
 	init_atlas()
+	init_particles()
 	init_game(0)
 }
 
+// Add a variable to track frame time
+last_frame_time: time.Time
+
 game_loop :: proc() {
+	last_frame_time = time.now()
 	for !rl.WindowShouldClose() {
 		update()
 		render()

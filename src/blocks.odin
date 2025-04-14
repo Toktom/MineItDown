@@ -102,6 +102,10 @@ get_block :: proc(x, y: int) -> ^Block {
 deactivate_block :: proc(x: int, y: int) {
 	block := get_block(x, y)
 	if block.status == State.Active {
+		// Trigger break effect before changing block state
+		texture_name := get_block_texture_name(block.type)
+		create_block_break_effect(x, y, texture_name)
+		
 		block.status = State.Inactive
 		block.type = BlockType.Empty
 		block.health = 0

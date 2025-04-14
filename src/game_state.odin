@@ -21,6 +21,12 @@ init_game :: proc(level: int) {
 	}
 	init_level_0()
 	init_player()
+	
+	// Reset particles
+	for i := 0; i < len(emitters); i += 1 {
+		delete(emitters[i].particles)
+	}
+	clear(&emitters)
 }
 
 
