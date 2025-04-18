@@ -54,7 +54,9 @@ init_level_0 :: proc() {
 }
 
 load_next_level :: proc() {
-	generate_level(get_current_level())
+	if !game_state.game_over {
+		generate_level(get_current_level())
+	}
 }
 
 generate_level :: proc(current_level: ^Level) {

@@ -56,7 +56,7 @@ draw_ui :: proc() {
 	// Add other UI elements as needed
 	if game_state.game_over {
 		rl.DrawText(
-			"GAME OVER! Press R to restart.",
+			"You finished the game!\n Press R to restart.",
 			i32(BOARD_OFFSET_X + 50),
 			i32(BOARD_OFFSET_Y + BOARD_SIZE_HEIGHT / 2),
 			30,
