@@ -4,52 +4,12 @@ import "core:fmt"
 import rl "vendor:raylib"
 
 draw_ui :: proc() {
-	// Draw debug information
-	rl.DrawText(
-		fmt.ctprintf("Position: [%d][%d]", player.pos.x, player.pos.y),
-		5,
-		5,
-		20,
-		rl.GREEN,
-	)
-
-	rl.DrawText(
-		fmt.ctprintf("Status: %v", get_block(player.pos.x, player.pos.y).status),
-		5,
-		25,
-		20,
-		rl.BLUE,
-	)
-
-	rl.DrawText(
-		fmt.ctprintf("Health: %v", get_block(player.pos.x, player.pos.y).health),
-		5,
-		45,
-		20,
-		rl.BLUE,
-	)
-
-		rl.DrawText(
-		fmt.ctprintf("Status: %v", get_interactable(player.pos.x, player.pos.y).status),
-		190,
-		25,
-		20,
-		rl.ORANGE,
-	)
-
-	rl.DrawText(
-		fmt.ctprintf("Type: %v", get_interactable(player.pos.x, player.pos.y).type),
-		190,
-		45,
-		20,
-		rl.ORANGE,
-	)
-
+	
 	rl.DrawText(
 		fmt.ctprintf("Level: %v", get_current_level().level),
-		900,
-		25,
-		20,
+		360,
+		5,
+		70,
 		rl.GREEN,
 	)
 
