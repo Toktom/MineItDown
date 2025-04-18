@@ -38,6 +38,8 @@ MOVEMENT_VECTORS :: [Direction][2]int {
 	.Left  = {-1, 0},
 	.Right = {1, 0},
 }
+MAX_PARTICLES :: 1000
+
 
 // Levels
 MAX_GRID_WIDTH :: 5

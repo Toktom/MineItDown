@@ -112,6 +112,8 @@ damage_block :: proc(x: int, y: int) {
 	block := get_block(x, y)
 	block.health = max(0, block.health - player.damage)
 	
+	emit_block_damage_particles({x, y})
+	
 	if block.type == BlockType.MossyStone && block.health == 1 {
 		set_block_type(x, y, BlockType.MossyStoneCracked)
 	} else if block.health <= 0 {

@@ -13,6 +13,7 @@ set_window_icon :: proc() {
 }
 
 cleanup_game :: proc() {
+	clear_particles()
 	unload_atlas()
 	rl.ShowCursor()
 	rl.CloseWindow()
@@ -33,6 +34,7 @@ render :: proc() {
 	render_background_board()
 	render_active_blocks()
 	render_active_interactables()
+	render_particles()  // Render particles after blocks but before player
 	player->draw()
 
 	//draw_player()
@@ -42,10 +44,10 @@ render :: proc() {
 	rl.EndDrawing()
 }
 
-
 update :: proc() {
 	game_state->update()
 	player->update()
+	update_particles()  // Update particle positions and lifetimes
 
 	if game_state.game_over {
 		handle_game_over_key_input()
@@ -53,7 +55,6 @@ update :: proc() {
 
 	move_player()
 }
-
 
 setup_game :: proc() {
 	//rl.SetTraceLogLevel(rl.TraceLogLevel.NONE)

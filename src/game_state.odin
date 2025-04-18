@@ -19,6 +19,8 @@ init_game :: proc(level: int) {
 			game_state.game_over = true
 		}
 	}
+	
+	init_particles()
 	init_level_0()
 	init_player()
 }
